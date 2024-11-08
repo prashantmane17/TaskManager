@@ -63,18 +63,23 @@ export default function Nav({children}) {
               </Link>
             </li>
             <li>
+            <Link href="/dashboard/tasks">
               <Button variant="ghost" className="w-full justify-start">
                 <CheckCircle className="mr-2 h-4 w-4" />
                 Tasks
               </Button>
+              </Link>
             </li>
             <li>
+            <Link href="/dashboard/calendar">
               <Button variant="ghost" className="w-full justify-start">
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 Calendar
               </Button>
+              </Link>
             </li>
             <li>
+            
               <Button variant="ghost" className="w-full justify-start">
                 <Users className="mr-2 h-4 w-4" />
                 Team
