@@ -6,7 +6,6 @@ export const db_Connect = async () => {
             console.log("Already connected to MongoDB");
             return;
         }
-
         const { connection } = await mongoose.connect(process.env.MONGO_DB_URL, {
             dbName: "TaskMaster",
         });
