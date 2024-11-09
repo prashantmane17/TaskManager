@@ -110,17 +110,17 @@ export default function Nav({ children }) {
             className="lg:hidden"
             onClick={() => setIsSidebarOpen(true)}
           >
-            <Menu className="h-6 w-6" />
+            <Menu className="h-5 md:h-6 w-6" />
             <span className="sr-only">Open sidebar</span>
           </Button>
           <div className="flex items-center">
             <Input
               type="search"
               placeholder="Search tasks..."
-              className="w-64 mr-4"
+              className="w-44 md:w-64 mr-4 ml-3"
             />
             <Button onClick={() => setModalOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" /> New Task
+              <Plus className="mr-1 h-4 w-4" /> New Task
             </Button>
 
             {isModalOpen && (
