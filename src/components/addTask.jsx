@@ -79,12 +79,23 @@ export default function AddTaskForm() {
   //   }
   // };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted task:", task);
-    // Here you would typically send the task data to your backend or state management system
-  };
-
+    try {
+      const response = await fetch("/api/addTask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(task),
+      });
+      if (response.ok) {
+        alert("Task added");
+      } else {
+        alert("Task not added");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
@@ -106,7 +117,7 @@ export default function AddTaskForm() {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 ">
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
@@ -116,15 +127,16 @@ export default function AddTaskForm() {
               rows={3}
             />
           </div>
-
-          <div className="space-y-2">
+  <div className="flex items-center justify-center">
+          <div className="space-y-2 w-[49%]">
             <Label htmlFor="priority">Priority</Label>
             <Select
               value={task.priority}
+              name=""
               onValueChange={(value) => handleSelectChange("priority", value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select priority" />
+                <SelectValue placeholder="Select priority"  />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Low">Low</SelectItem>
@@ -134,7 +146,7 @@ export default function AddTaskForm() {
             </Select>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 w-[49%]">
             <Label htmlFor="assignee">Assign To</Label>
             <Select
               value={task.assignee}
@@ -152,8 +164,9 @@ export default function AddTaskForm() {
               </SelectContent>
             </Select>
           </div>
-
-          <div className="space-y-2">
+  </div>
+  <div className="flex items-center justify-center">
+          <div className="space-y-2 w-[49%]">
             <Label>Deadline</Label>
             <Popover>
               <PopoverTrigger asChild>
@@ -183,7 +196,7 @@ export default function AddTaskForm() {
             </Popover>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 w-[49%]">
             <Label>Date Added</Label>
             <Popover>
               <PopoverTrigger asChild>
@@ -212,8 +225,9 @@ export default function AddTaskForm() {
               </PopoverContent>
             </Popover>
           </div>
-
-          <div className="space-y-2">
+</div>
+<div className="flex items-center justify-center">
+          <div className="space-y-2 w-[49%]">
             <Label htmlFor="estimatedTime">Estimated Time</Label>
             <div className="flex items-center space-x-2">
               <Clock className="h-4 w-4 text-gray-500" />
@@ -227,7 +241,7 @@ export default function AddTaskForm() {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 w-[49%]">
             <Label htmlFor="tags">Tags</Label>
             <Input
               id="tags"
@@ -237,7 +251,7 @@ export default function AddTaskForm() {
               placeholder="Enter tags separated by commas"
             />
           </div>
-
+</div>
           {/* <div className="space-y-2">
             <Label htmlFor="attachments">Attachments</Label>
             <Input

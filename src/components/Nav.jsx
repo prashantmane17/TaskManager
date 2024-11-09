@@ -124,7 +124,7 @@ export default function Nav({ children }) {
             </Button>
 
             {isModalOpen && (
-              <div className="fixed inset-0 flex z-50 h-[100-dvh] pt-[50vh] md:pt-[100vh] overflow-y-auto items-center justify-center bg-gray-800 bg-opacity-50">
+              <div className="fixed inset-0 flex z-50 h-[100-dvh] pt-[50vh] md:pt-[0vh] overflow-y-auto items-center justify-center bg-gray-800 bg-opacity-50">
                 <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl mx-auto">
                   <button onClick={toggleModal} className="text-red-500 mb-4">
                     Close
