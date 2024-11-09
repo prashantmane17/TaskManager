@@ -20,6 +20,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { CalendarIcon, Clock } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const EnhancedTaskCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -28,6 +37,11 @@ const EnhancedTaskCalendar = () => {
     title: "",
     description: "",
     priority: "Medium",
+    assignee: "",
+    deadline: new Date(),
+    dateAdded: new Date(),
+    estimatedTime: "",
+    tags: [],
   });
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -54,6 +68,13 @@ const EnhancedTaskCalendar = () => {
     );
   };
 
+  const teamMembers = [
+    { id: "1", name: "Alice Johnson" },
+    { id: "2", name: "Bob Smith" },
+    { id: "3", name: "Charlie Brown" },
+    { id: "4", name: "Diana Ross" },
+  ];
+
   const addTask = () => {
     if (newTask.title && selectedDate) {
       const taskDate = new Date(selectedDate);
@@ -69,9 +90,20 @@ const EnhancedTaskCalendar = () => {
           date: taskDate,
           deadline: deadlineDate,
           priority: newTask.priority,
+          assignee: newTask.assignee,
+          dateAdded: newTask.dateAdded,
+          estimatedTime: newTask.estimatedTime,
+          tags: newTask.tags,
         },
       ]);
-      setNewTask({ title: "", description: "", priority: "Medium" });
+      setNewTask({
+        title: "",
+        description: "",
+        priority: "Medium",
+        assignee: "",
+        estimatedTime: "",
+        tags: [],
+      });
     }
   };
 
@@ -81,10 +113,7 @@ const EnhancedTaskCalendar = () => {
 
   const getTasksForDate = (date) => {
     return tasks.filter(
-      (task) =>
-        task.date.getDate() === date.getDate() &&
-        task.date.getMonth() === date.getMonth() &&
-        task.date.getFullYear() === date.getFullYear()
+      (task) => task.date.getTime() === date.getTime() // Use getTime() for more accurate date comparison
     );
   };
 
@@ -99,6 +128,26 @@ const EnhancedTaskCalendar = () => {
       default:
         return "";
     }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewTask((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name, value) => {
+    setNewTask((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDateChange = (date, field) => {
+    if (date) {
+      setNewTask((prev) => ({ ...prev, [field]: date }));
+    }
+  };
+
+  const handleTagsChange = (e) => {
+    const tags = e.target.value.split(",").map((tag) => tag.trim());
+    setNewTask((prev) => ({ ...prev, tags }));
   };
 
   return (
@@ -165,7 +214,7 @@ const EnhancedTaskCalendar = () => {
                   )}
                 </div>
               </DialogTrigger>
-              <DialogContent className="max-w-md">
+              <DialogContent className="max-w-md h-[100dvh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>
                     {date.toLocaleDateString("default", {
@@ -177,7 +226,7 @@ const EnhancedTaskCalendar = () => {
                 </DialogHeader>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="newTaskTitle">New Task</Label>
+                    <Label htmlFor="newTaskTitle">Task Title</Label>
                     <Input
                       id="newTaskTitle"
                       value={newTask.title}
@@ -198,23 +247,102 @@ const EnhancedTaskCalendar = () => {
                       placeholder="Enter task description"
                     />
                   </div>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2 w-[49%]">
+                      <Label htmlFor="newTaskPriority">Priority</Label>
+                      <Select
+                        value={newTask.priority}
+                        onValueChange={(value) =>
+                          setNewTask({ ...newTask, priority: value })
+                        }
+                      >
+                        <SelectTrigger id="newTaskPriority">
+                          <SelectValue placeholder="Select priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Low">Low</SelectItem>
+                          <SelectItem value="Medium">Medium</SelectItem>
+                          <SelectItem value="High">High</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2 w-[49%]">
+                      <Label htmlFor="assignee">Assign To</Label>
+                      <Select
+                        value={newTask.assignee}
+                        onValueChange={(value) =>
+                          handleSelectChange("assignee", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select team member" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {teamMembers.map((member) => (
+                            <SelectItem key={member.id} value={member.id}>
+                              {member.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2 w-[49%]">
+                      <Label>Date Added</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !newTask.dateAdded && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {newTask.dateAdded ? (
+                              format(newTask.dateAdded, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={newTask.dateAdded}
+                            onSelect={(date) =>
+                              handleDateChange(date, "dateAdded")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div className="space-y-2 w-[49%]">
+                      <Label htmlFor="estimatedTime">Estimated Time</Label>
+                      <div className="flex items-center space-x-2">
+                        <Clock className="h-4 w-4 text-gray-500" />
+                        <Input
+                          id="estimatedTime"
+                          name="estimatedTime"
+                          value={newTask.estimatedTime}
+                          onChange={handleInputChange}
+                          placeholder="e.g., 2 hours"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="newTaskPriority">Priority</Label>
-                    <Select
-                      value={newTask.priority}
-                      onValueChange={(value) =>
-                        setNewTask({ ...newTask, priority: value })
-                      }
-                    >
-                      <SelectTrigger id="newTaskPriority">
-                        <SelectValue placeholder="Select priority" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Low">Low</SelectItem>
-                        <SelectItem value="Medium">Medium</SelectItem>
-                        <SelectItem value="High">High</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="tags">Tags</Label>
+                    <Input
+                      id="tags"
+                      name="tags"
+                      value={newTask.tags ? newTask.tags.join(", ") : ""}
+                      onChange={handleTagsChange}
+                      placeholder="Enter tags separated by commas"
+                    />
                   </div>
                   <Button
                     onClick={() => {

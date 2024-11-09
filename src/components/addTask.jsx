@@ -47,7 +47,7 @@ export default function AddTaskForm() {
     dateAdded: new Date(),
     estimatedTime: "",
     tags: [],
-    attachments: [],
+    // attachments: [],
   });
 
   const handleInputChange = (e) => {
@@ -70,14 +70,14 @@ export default function AddTaskForm() {
     setTask((prev) => ({ ...prev, tags }));
   };
 
-  const handleFileChange = (e) => {
-    if (e.target.files) {
-      setTask((prev) => ({
-        ...prev,
-        attachments: Array.from(e.target.files || []),
-      }));
-    }
-  };
+  // const handleFileChange = (e) => {
+  //   if (e.target.files) {
+  //     setTask((prev) => ({
+  //       ...prev,
+  //       attachments: Array.from(e.target.files || []),
+  //     }));
+  //   }
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -238,7 +238,7 @@ export default function AddTaskForm() {
             />
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="attachments">Attachments</Label>
             <Input
               id="attachments"
@@ -247,7 +247,7 @@ export default function AddTaskForm() {
               onChange={handleFileChange}
               multiple
             />
-          </div>
+          </div> */}
         </CardContent>
         <CardFooter>
           <Button type="submit" className="w-full">
