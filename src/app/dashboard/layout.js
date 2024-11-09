@@ -1,3 +1,4 @@
+import AddTaskForm from "@/components/addTask";
 import Nav from "@/components/Nav";
 
 export const metadata = {
@@ -10,6 +11,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
        <Nav>{ children }</Nav>
+       {/* <AddTaskForm/> */}
       </body>
     </html>
   );

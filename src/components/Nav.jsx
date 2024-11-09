@@ -79,11 +79,12 @@ export default function Nav({children}) {
               </Link>
             </li>
             <li>
-            
+            <Link href="/dashboard/team">
               <Button variant="ghost" className="w-full justify-start">
                 <Users className="mr-2 h-4 w-4" />
                 Team
               </Button>
+              </Link>
             </li>
           </ul>
         </nav>
