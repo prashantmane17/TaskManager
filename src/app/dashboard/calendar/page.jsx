@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,9 +29,12 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { addTaskDb } from "@/axios/taskService";
+import { addTaskDb, getTasksDB } from "@/axios/taskService";
 
 const EnhancedTaskCalendar = () => {
+ 
+
+
   const [currentDate, setCurrentDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({
@@ -44,6 +47,20 @@ const EnhancedTaskCalendar = () => {
     estimatedTime: "",
     tags: [],
   });
+  const[userTask, setUserTask] = useState([]);
+  const fetchTasks = async () => {
+    try {
+      const tasksdata = await getTasksDB(); // Fetch tasks
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
+  // useEffect(() => {
+
+  //   fetchTasks(); 
+  // }, []); 
+
+  
   const [selectedDate, setSelectedDate] = useState(null);
 
   const daysInMonth = new Date(

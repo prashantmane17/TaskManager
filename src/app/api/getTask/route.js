@@ -1,8 +1,8 @@
-import Task from "@/models/task"; // Import the Task model if tasks are stored in a separate collection
+import Tasks from "@/models/tasks"; 
 import { NextResponse } from "next/server";
 import { db_Connect } from "@/helper/dbConnect";
 
-export async function POST(request) {
+export async function GET(request) {
     await db_Connect(); // Connect to the database
 
     try {
@@ -10,8 +10,8 @@ export async function POST(request) {
         // const { userId } = await request.json(); // Assume the client sends userId to fetch tasks for a specific user
 
         //  Query the database for tasks
-        // const tasks = await Task.find({ userId }); // Assuming tasks are associated with a userId field
-        const tasks = await Task.find();
+        // const tasks = await Tasks.find({ userId }); // Assuming tasks are associated with a userId field
+        const tasks = await Tasks.find();
         // Respond with tasks
         return NextResponse.json({
             success: true,
