@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar as CheckCircle, Clock, Users } from "lucide-react";
 import {
   Bar,
@@ -27,6 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getTasksDB } from "@/axios/taskService";
 
 const data = [
   { name: "Mon", tasks: 3 },
@@ -73,6 +74,25 @@ const recentTasks = [
 
 export default function Dashboard() {
   const [date, setDate] = useState(new Date());
+  const [taskData, setTaskData] = useState([]);
+  const [totalTasks, setTotalTasks] = useState("0");
+  
+  const fecthTasks =async()=>{
+try{
+  const userTasks = await getTasksDB();
+  setTaskData(userTasks);
+  console.log(taskData.length)
+}
+catch{
+
+}
+  }
+  useEffect(()=>{
+    fecthTasks();
+    const count = taskData.length;
+    console.log(taskData.length)
+    setTotalTasks(count)
+  },[]);
 
   return (
     <div className="container mx-auto px-6 py-8">
@@ -84,7 +104,7 @@ export default function Dashboard() {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">45</div>
+            <div className="text-2xl font-bold">{totalTasks}</div>
             <p className="text-xs text-muted-foreground">+2 from yesterday</p>
           </CardContent>
         </Card>

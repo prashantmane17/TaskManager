@@ -45,7 +45,6 @@ export default function AddTaskForm() {
     priority: "Medium",
     assignee: "",
     deadline: new Date(),
-    dateAdded: new Date(),
     estimatedTime: "",
     tags: [],
     // attachments: [],
@@ -189,7 +188,7 @@ export default function AddTaskForm() {
             </Popover>
           </div>
 
-          <div className="space-y-2 w-[49%]">
+          {/* <div className="space-y-2 w-[49%]">
             <Label>Date Added</Label>
             <Popover>
               <PopoverTrigger asChild>
@@ -217,7 +216,7 @@ export default function AddTaskForm() {
                 />
               </PopoverContent>
             </Popover>
-          </div>
+          </div> */}
 </div>
 <div className="flex items-center justify-center">
           <div className="space-y-2 w-[49%]">

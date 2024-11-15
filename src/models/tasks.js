@@ -24,6 +24,10 @@ const TaskSchema = new mongoose.Schema({
     required: true,
   },
   tags: [String],
+  isCompleted: {
+    type: String,
+    default: "pending", // Automatically set pending to when a task is created
+  },
 });
 
 export default mongoose.models.Tasks || mongoose.model('Tasks', TaskSchema);
