@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,6 +19,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { Search, UserPlus, X } from 'lucide-react'
+import { addMember, getMember } from '@/axios/teamUser'
 
 const initialTeamMembers = [
   { id: '1', name: 'Alice Johnson', email: 'alice@example.com', role: 'Project Manager', avatar: '/placeholder.svg?height=40&width=40' },
@@ -29,10 +30,21 @@ const initialTeamMembers = [
 ]
 
 export default function TeamMemberSection() {
-  const [teamMembers, setTeamMembers] = useState(initialTeamMembers)
+  const [teamMembers, setTeamMembers] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [newMember, setNewMember] = useState({ name: '', email: '', role: '' })
 
+  const fecthMember = async()=>{
+    try {
+      const user = await getMember();
+      // setTeamMembers(user);
+      setTeamMembers(user.map(member => ({ ...member, id: member._id || member.email }))) 
+      console.log(user);
+    } catch {}
+  }
+useEffect(()=>{
+  fecthMember();
+},[])
   const filteredMembers = teamMembers.filter(member =>
     member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -56,6 +68,16 @@ export default function TeamMemberSection() {
     setTeamMembers(teamMembers.filter(member => member.id !== id))
   }
 
+  const handleSubmit = async(e)=>{
+    e.preventDefault();
+    try {
+      const data = await addMember(newMember);
+      if (data.success) alert("Task added successfully");
+    } catch (error) {
+      console.log("error: ", error);
+    }
+    
+  }
   return (
     <div className="container mx-auto p-4">
       <Card className="w-full max-w-4xl mx-auto">
@@ -64,6 +86,7 @@ export default function TeamMemberSection() {
           <CardDescription>Manage your team and their roles</CardDescription>
         </CardHeader>
         <CardContent>
+          <form >
           <div className="flex items-center space-x-2 mb-4">
             <div className="relative flex-grow">
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
@@ -125,11 +148,12 @@ export default function TeamMemberSection() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button onClick={addTeamMember}>Add Member</Button>
+                  <Button onClick={(e)=>{handleSubmit(e); addTeamMember}}>Add Member</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
+          </form>
           <ScrollArea className="h-[400px] border rounded-md">
             {filteredMembers.map((member) => (
               <div key={member.id} className="flex items-center justify-between p-4 hover:bg-gray-50">

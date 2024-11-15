@@ -76,23 +76,22 @@ export default function Dashboard() {
   const [date, setDate] = useState(new Date());
   const [taskData, setTaskData] = useState([]);
   const [totalTasks, setTotalTasks] = useState("0");
-  
-  const fecthTasks =async()=>{
-try{
-  const userTasks = await getTasksDB();
-  setTaskData(userTasks);
-  console.log(taskData.length)
-}
-catch{
+  const [completedTask, setCompletedTask] = useState("0");
+  const [pendingTask, setPendingTask] = useState("0");
 
-}
-  }
-  useEffect(()=>{
+  const fecthTasks = async () => {
+    try {
+      const userTasks = await getTasksDB();
+      setTaskData(userTasks);
+      setTotalTasks(userTasks.length);
+      setCompletedTask("1");
+      setPendingTask("2");
+      console.log(userTasks);
+    } catch {}
+  };
+  useEffect(() => {
     fecthTasks();
-    const count = taskData.length;
-    console.log(taskData.length)
-    setTotalTasks(count)
-  },[]);
+  }, []);
 
   return (
     <div className="container mx-auto px-6 py-8">
@@ -116,7 +115,7 @@ catch{
             <CheckCircle className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">28</div>
+            <div className="text-2xl font-bold">{completedTask}</div>
             <p className="text-xs text-muted-foreground">62% completion rate</p>
           </CardContent>
         </Card>
@@ -126,7 +125,7 @@ catch{
             <Clock className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">15</div>
+            <div className="text-2xl font-bold">{pendingTask}</div>
             <p className="text-xs text-muted-foreground">33% of total tasks</p>
           </CardContent>
         </Card>
