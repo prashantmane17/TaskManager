@@ -150,17 +150,17 @@ const EnhancedTaskCalendar = () => {
     const tags = e.target.value.split(",").map((tag) => tag.trim());
     setNewTask((prev) => ({ ...prev, tags }));
   };
-  const handleSubmit = async (date,e) => {
+  const handleSubmit = async (date, e) => {
     setSelectedDate(date);
     addTask();
     e.preventDefault();
     try {
-     const data =  await addTaskDb(newTask);
-      if (data.success) alert('Task added successfully');
+      const data = await addTaskDb(newTask);
+      if (data.success) alert("Task added successfully");
     } catch (error) {
-      console.log("error: ",error)
+      console.log("error: ", error);
     }
-  }
+  };
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
@@ -236,197 +236,200 @@ const EnhancedTaskCalendar = () => {
                   </DialogTitle>
                 </DialogHeader>
                 <form>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="newTaskTitle">Task Title</Label>
-                    <Input
-                      id="newTaskTitle"
-                      value={newTask.title}
-                      name="title"
-                      onChange={(e) =>
-                        setNewTask({ ...newTask, title: e.target.value })
-                      }
-                      placeholder="Enter task title"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="newTaskDescription">Description</Label>
-                    <Textarea
-                      id="newTaskDescription"
-                      value={newTask.description}
-                      name="description"
-                      onChange={(e) =>
-                        setNewTask({ ...newTask, description: e.target.value })
-                      }
-                      placeholder="Enter task description"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2 w-[49%]">
-                      <Label htmlFor="newTaskPriority">Priority</Label>
-                      <Select
-                        value={newTask.priority}
-                        onValueChange={(value) =>
-                          setNewTask({ ...newTask, priority: value })
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="newTaskTitle">Task Title</Label>
+                      <Input
+                        id="newTaskTitle"
+                        value={newTask.title}
+                        name="title"
+                        onChange={(e) =>
+                          setNewTask({ ...newTask, title: e.target.value })
                         }
-                      >
-                        <SelectTrigger id="newTaskPriority">
-                          <SelectValue placeholder="Select priority" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Low">Low</SelectItem>
-                          <SelectItem value="Medium">Medium</SelectItem>
-                          <SelectItem value="High">High</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        placeholder="Enter task title"
+                      />
                     </div>
-                    <div className="space-y-2 w-[49%]">
-                      <Label htmlFor="assignee">Assign To</Label>
-                      <Select
-                        value={newTask.assignee}
-                        onValueChange={(value) =>
-                          handleSelectChange("assignee", value)
+                    <div className="space-y-2">
+                      <Label htmlFor="newTaskDescription">Description</Label>
+                      <Textarea
+                        id="newTaskDescription"
+                        value={newTask.description}
+                        name="description"
+                        onChange={(e) =>
+                          setNewTask({
+                            ...newTask,
+                            description: e.target.value,
+                          })
                         }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select team member" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {teamMembers.map((member) => (
-                            <SelectItem key={member.id} value={member.id}>
-                              {member.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        placeholder="Enter task description"
+                      />
                     </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                  <div className="space-y-2 w-[49%]">
-            <Label>Deadline</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !newTask.deadline && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {newTask.deadline ? (
-                    format(newTask.deadline, "PPP")
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={newTask.deadline}
-                  onSelect={(date) => handleDateChange(date, "deadline")}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-                    <div className="space-y-2 w-[49%]">
-                      <Label>Date Added</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !newTask.dateAdded && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {newTask.dateAdded ? (
-                              format(newTask.dateAdded, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={newTask.dateAdded}
-                            onSelect={(date) =>
-                              handleDateChange(date, "dateAdded")
-                            }
-                            initialFocus
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2 w-[49%]">
+                        <Label htmlFor="newTaskPriority">Priority</Label>
+                        <Select
+                          value={newTask.priority}
+                          onValueChange={(value) =>
+                            setNewTask({ ...newTask, priority: value })
+                          }
+                        >
+                          <SelectTrigger id="newTaskPriority">
+                            <SelectValue placeholder="Select priority" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Low">Low</SelectItem>
+                            <SelectItem value="Medium">Medium</SelectItem>
+                            <SelectItem value="High">High</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2 w-[49%]">
+                        <Label htmlFor="assignee">Assign To</Label>
+                        <Select
+                          value={newTask.assignee}
+                          onValueChange={(value) =>
+                            handleSelectChange("assignee", value)
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select team member" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {teamMembers.map((member) => (
+                              <SelectItem key={member.id} value={member.id}>
+                                {member.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2 w-[49%]">
+                        <Label>Deadline</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !newTask.deadline && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {newTask.deadline ? (
+                                format(newTask.deadline, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={newTask.deadline}
+                              onSelect={(date) =>
+                                handleDateChange(date, "deadline")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <div className="space-y-2 w-[49%]">
+                        <Label>Date Added</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !newTask.dateAdded && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {newTask.dateAdded ? (
+                                format(newTask.dateAdded, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={newTask.dateAdded}
+                              onSelect={(date) =>
+                                handleDateChange(date, "dateAdded")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2 w-[49%]">
+                        <Label htmlFor="estimatedTime">Estimated Time</Label>
+                        <div className="flex items-center space-x-2">
+                          <Clock className="h-4 w-4 text-gray-500" />
+                          <Input
+                            id="estimatedTime"
+                            name="estimatedTime"
+                            value={newTask.estimatedTime}
+                            onChange={handleInputChange}
+                            placeholder="e.g., 2 hours"
                           />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2 w-[49%]">
-                      <Label htmlFor="estimatedTime">Estimated Time</Label>
-                      <div className="flex items-center space-x-2">
-                        <Clock className="h-4 w-4 text-gray-500" />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tags">Tags</Label>
                         <Input
-                          id="estimatedTime"
-                          name="estimatedTime"
-                          value={newTask.estimatedTime}
-                          onChange={handleInputChange}
-                          placeholder="e.g., 2 hours"
+                          id="tags"
+                          name="tags"
+                          value={newTask.tags ? newTask.tags.join(", ") : ""}
+                          onChange={handleTagsChange}
+                          placeholder="Enter tags separated by commas"
                         />
                       </div>
                     </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="tags">Tags</Label>
-                    <Input
-                      id="tags"
-                      name="tags"
-                      value={newTask.tags ? newTask.tags.join(", ") : ""}
-                      onChange={handleTagsChange}
-                      placeholder="Enter tags separated by commas"
-                    />
-                  </div>
-                  </div>
-                  <Button
-                    onClick={(e) => {
-                      handleSubmit(date, e)
-                      
-                      
-                    }}
-                    className="w-full"
-                  >
-                    <Plus className="h-4 w-4 mr-2" /> Add Task
-                  </Button>
-                  <div className="space-y-2">
-                    <h3 className="font-semibold">Tasks for this day:</h3>
-                    {dayTasks.map((task) => (
-                      <div
-                        key={task.id}
-                        className={`p-2 rounded ${getPriorityColor(
-                          task.priority
-                        )}`}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium">{task.title}</h4>
-                            <p className="text-xs">{task.description}</p>
-                            <p className="text-xs mt-1">
-                              Deadline: {task.deadline.toLocaleDateString()}
-                            </p>
+                    <Button
+                      onClick={(e) => {
+                        handleSubmit(date, e);
+                      }}
+                      className="w-full"
+                    >
+                      <Plus className="h-4 w-4 mr-2" /> Add Task
+                    </Button>
+                    <div className="space-y-2">
+                      <h3 className="font-semibold">Tasks for this day:</h3>
+                      {dayTasks.map((task) => (
+                        <div
+                          key={task.id}
+                          className={`p-2 rounded ${getPriorityColor(
+                            task.priority
+                          )}`}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h4 className="font-medium">{task.title}</h4>
+                              <p className="text-xs">{task.description}</p>
+                              <p className="text-xs mt-1">
+                                Deadline: {task.deadline.toLocaleDateString()}
+                              </p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteTask(task.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => deleteTask(task.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
                 </form>
               </DialogContent>
             </Dialog>
