@@ -29,6 +29,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { addTaskDb } from "@/axios/taskService";
 
 const EnhancedTaskCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -149,13 +150,15 @@ const EnhancedTaskCalendar = () => {
     const tags = e.target.value.split(",").map((tag) => tag.trim());
     setNewTask((prev) => ({ ...prev, tags }));
   };
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (date,e) => {
+    setSelectedDate(date);
+    addTask();
     e.preventDefault();
     try {
-     const data =  await addTask(tasks);
+     const data =  await addTaskDb(newTask);
       if (data.success) alert('Task added successfully');
     } catch (error) {
-      
+      console.log("error: ",error)
     }
   }
   return (
@@ -232,7 +235,7 @@ const EnhancedTaskCalendar = () => {
                     })}
                   </DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSubmit}>
+                <form>
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="newTaskTitle">Task Title</Label>
@@ -386,11 +389,10 @@ const EnhancedTaskCalendar = () => {
                   </div>
                   </div>
                   <Button
-                  type="submit"
-                    onClick={() => {
-                      setSelectedDate(date);
-                      addTask();
-                      handleSubmit();
+                    onClick={(e) => {
+                      handleSubmit(date, e)
+                      
+                      
                     }}
                     className="w-full"
                   >

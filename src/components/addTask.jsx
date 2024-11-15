@@ -29,7 +29,7 @@ import {
 import { CalendarIcon, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { addTask } from "@/axios/taskService";
+import { addTaskDb } from "@/axios/taskService";
 
 const teamMembers = [
   { id: "1", name: "Alice Johnson" },
@@ -83,10 +83,10 @@ export default function AddTaskForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-     const data =  await addTask(task);
+     const data =  await addTaskDb(task);
       if (data.success) alert('Task added successfully');
     } catch (error) {
-      
+      console.log("error: ", error)
     }
   }
   return (

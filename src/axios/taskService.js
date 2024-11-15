@@ -1,6 +1,6 @@
 import api from './api';
 
-export const addTask = async (taskData) => {
+export const addTaskDb = async (taskData) => {
   try {
     const response = await api.post('/addTask', taskData);
     return response.data;
