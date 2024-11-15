@@ -149,7 +149,15 @@ const EnhancedTaskCalendar = () => {
     const tags = e.target.value.split(",").map((tag) => tag.trim());
     setNewTask((prev) => ({ ...prev, tags }));
   };
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+     const data =  await addTask(tasks);
+      if (data.success) alert('Task added successfully');
+    } catch (error) {
+      
+    }
+  }
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
@@ -224,12 +232,14 @@ const EnhancedTaskCalendar = () => {
                     })}
                   </DialogTitle>
                 </DialogHeader>
+                <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="newTaskTitle">Task Title</Label>
                     <Input
                       id="newTaskTitle"
                       value={newTask.title}
+                      name="title"
                       onChange={(e) =>
                         setNewTask({ ...newTask, title: e.target.value })
                       }
@@ -241,6 +251,7 @@ const EnhancedTaskCalendar = () => {
                     <Textarea
                       id="newTaskDescription"
                       value={newTask.description}
+                      name="description"
                       onChange={(e) =>
                         setNewTask({ ...newTask, description: e.target.value })
                       }
@@ -288,6 +299,35 @@ const EnhancedTaskCalendar = () => {
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
+                  <div className="space-y-2 w-[49%]">
+            <Label>Deadline</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !newTask.deadline && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {newTask.deadline ? (
+                    format(newTask.deadline, "PPP")
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={newTask.deadline}
+                  onSelect={(date) => handleDateChange(date, "deadline")}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
                     <div className="space-y-2 w-[49%]">
                       <Label>Date Added</Label>
                       <Popover>
@@ -319,6 +359,8 @@ const EnhancedTaskCalendar = () => {
                         </PopoverContent>
                       </Popover>
                     </div>
+                  </div>
+                  <div className="flex items-center justify-between">
                     <div className="space-y-2 w-[49%]">
                       <Label htmlFor="estimatedTime">Estimated Time</Label>
                       <div className="flex items-center space-x-2">
@@ -332,8 +374,6 @@ const EnhancedTaskCalendar = () => {
                         />
                       </div>
                     </div>
-                  </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="tags">Tags</Label>
                     <Input
@@ -344,10 +384,13 @@ const EnhancedTaskCalendar = () => {
                       placeholder="Enter tags separated by commas"
                     />
                   </div>
+                  </div>
                   <Button
+                  type="submit"
                     onClick={() => {
                       setSelectedDate(date);
                       addTask();
+                      handleSubmit();
                     }}
                     className="w-full"
                   >
@@ -382,6 +425,7 @@ const EnhancedTaskCalendar = () => {
                     ))}
                   </div>
                 </div>
+                </form>
               </DialogContent>
             </Dialog>
           );

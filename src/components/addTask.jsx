@@ -125,7 +125,7 @@ export default function AddTaskForm() {
             <Label htmlFor="priority">Priority</Label>
             <Select
               value={task.priority}
-              name=""
+              
               onValueChange={(value) => handleSelectChange("priority", value)}
             >
               <SelectTrigger>
