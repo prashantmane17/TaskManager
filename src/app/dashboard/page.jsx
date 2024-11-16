@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar as CheckCircle, Clock, Users } from "lucide-react";
+import {
+  CalendarIcon,
+  Calendar as CheckCircle,
+  Clock,
+  Users,
+} from "lucide-react";
 import {
   Bar,
   BarChart as RechartsBarChart,
@@ -9,6 +14,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { format } from "date-fns";
 
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -40,46 +46,46 @@ const data = [
   { name: "Sun", tasks: 6 },
 ];
 
-const recentTasks = [
-  {
-    id: 1,
-    title: "Design new landing page",
-    status: "In Progress",
-    assignee: "Alice Johnson",
-  },
-  {
-    id: 2,
-    title: "Fix navigation bug",
-    status: "Completed",
-    assignee: "Bob Smith",
-  },
-  {
-    id: 3,
-    title: "Update user documentation",
-    status: "Not Started",
-    assignee: "Charlie Brown",
-  },
-  {
-    id: 4,
-    title: "Implement new feature",
-    status: "In Progress",
-    assignee: "Diana Prince",
-  },
-  {
-    id: 5,
-    title: "Refactor authentication module",
-    status: "In Review",
-    assignee: "Ethan Hunt",
-  },
-];
+// const recentTasks = [
+//   {
+//     id: 1,
+//     title: "Design new landing page",
+//     status: "In Progress",
+//     assignee: "Alice Johnson",
+//   },
+//   {
+//     id: 2,
+//     title: "Fix navigation bug",
+//     status: "Completed",
+//     assignee: "Bob Smith",
+//   },
+//   {
+//     id: 3,
+//     title: "Update user documentation",
+//     status: "Not Started",
+//     assignee: "Charlie Brown",
+//   },
+//   {
+//     id: 4,
+//     title: "Implement new feature",
+//     status: "In Progress",
+//     assignee: "Diana Prince",
+//   },
+//   {
+//     id: 5,
+//     title: "Refactor authentication module",
+//     status: "In Review",
+//     assignee: "Ethan Hunt",
+//   },
+// ];
 
 export default function Dashboard() {
   const [date, setDate] = useState(new Date());
   const [taskData, setTaskData] = useState([]);
   const [totalTasks, setTotalTasks] = useState("0");
-  const [completedTask, setCompletedTask] = useState("0");
-  const [pendingTask, setPendingTask] = useState("0");
   const [teamCount, setTeamCount] = useState("0");
+  const [completedCount, setCompletedCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
 
   const fecthTasks = async () => {
     try {
@@ -88,9 +94,19 @@ export default function Dashboard() {
       const userTasks = await getTasksDB();
       setTaskData(userTasks);
       setTotalTasks(userTasks.length);
-      setCompletedTask("1");
-      setPendingTask("2");
-      console.log(userTasks);
+      let completed = 0;
+      let pending = 0;
+
+      userTasks.forEach((task) => {
+        if (task.isCompleted) {
+          completed += 1;
+        } else {
+          pending += 1;
+        }
+      });
+
+      setCompletedCount(completed);
+      setPendingCount(pending);
     } catch {}
   };
   useEffect(() => {
@@ -119,7 +135,7 @@ export default function Dashboard() {
             <CheckCircle className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{completedTask}</div>
+            <div className="text-2xl font-bold">{completedCount}</div>
             <p className="text-xs text-muted-foreground">62% completion rate</p>
           </CardContent>
         </Card>
@@ -129,7 +145,7 @@ export default function Dashboard() {
             <Clock className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{pendingTask}</div>
+            <div className="text-2xl font-bold">{pendingCount}</div>
             <p className="text-xs text-muted-foreground">33% of total tasks</p>
           </CardContent>
         </Card>
@@ -157,16 +173,21 @@ export default function Dashboard() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Task</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Assignee</TableHead>
+                  <TableHead>DeadLine</TableHead>
+                  <TableHead>Est. Time</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recentTasks.map((task) => (
-                  <TableRow key={task.id}>
+                {taskData.map((task) => (
+                  <TableRow key={task._id}>
                     <TableCell>{task.title}</TableCell>
-                    <TableCell>{task.status}</TableCell>
-                    <TableCell>{task.assignee}</TableCell>
+                    <TableCell className="flex items-center">
+                      <CalendarIcon className="h-4 w-4 mr-1" />
+                      <span className="text-sm">
+                        {format(task.deadline, "MMM d, yyyy")}
+                      </span>
+                    </TableCell>
+                    <TableCell>{task.estimatedTime} hrs</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

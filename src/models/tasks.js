@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const TaskSchema = new mongoose.Schema({
   title: {
@@ -25,9 +25,9 @@ const TaskSchema = new mongoose.Schema({
   },
   tags: [String],
   isCompleted: {
-    type: String,
-    default: "pending", // Automatically set pending to when a task is created
+    type: Boolean,
+    default: false,
   },
 });
 
-export default mongoose.models.Tasks || mongoose.model('Tasks', TaskSchema);
+export default mongoose.models.Tasks || mongoose.model("Tasks", TaskSchema);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -27,6 +27,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { format } from "date-fns";
+import { getTasksDB } from "@/axios/taskService";
 
 const initialTasks = [
   {
@@ -43,7 +44,7 @@ const initialTasks = [
     dateAdded: new Date(2023, 5, 1),
     estimatedTime: "3 days",
     tags: ["backend", "security"],
-    completed: false,
+    isCompleted: false,
   },
   {
     id: "2",
@@ -59,7 +60,7 @@ const initialTasks = [
     dateAdded: new Date(2023, 5, 5),
     estimatedTime: "5 days",
     tags: ["design", "frontend"],
-    completed: true,
+    isCompleted: true,
   },
   {
     id: "3",
@@ -75,14 +76,32 @@ const initialTasks = [
     dateAdded: new Date(2023, 5, 10),
     estimatedTime: "2 days",
     tags: ["backend", "performance"],
-    completed: false,
+    isCompleted: false,
   },
 ];
 
 export default function LaptopTask() {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedTasks, setExpandedTasks] = useState([]);
+
+  const fecthTask = async () => {
+    try {
+      const tasksList = await getTasksDB();
+      // setTeamMembers(user);
+      setTasks(
+        tasksList.map((member) => ({
+          ...member,
+          id: member._id || member.email,
+        }))
+      );
+      console.log(user);
+    } catch {}
+  };
+
+  useEffect(() => {
+    fecthTask();
+  }, []);
 
   const filteredTasks = tasks.filter(
     (task) =>
@@ -108,7 +127,7 @@ export default function LaptopTask() {
   const toggleTaskCompletion = (taskId) => {
     setTasks((prev) =>
       prev.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
+        task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task
       )
     );
   };
@@ -138,7 +157,7 @@ export default function LaptopTask() {
               <TableRow>
                 <TableHead className="w-[50px]">Status</TableHead>
                 <TableHead>Task</TableHead>
-                <TableHead>Assignee</TableHead>
+                {/* <TableHead>Assignee</TableHead> */}
                 <TableHead>Priority</TableHead>
                 <TableHead>Deadline</TableHead>
                 <TableHead>Est. Time</TableHead>
@@ -153,7 +172,7 @@ export default function LaptopTask() {
                     <TableCell>
                       <Checkbox
                         id={`task-${task.id}`}
-                        checked={task.completed}
+                        checked={task.isCompleted}
                         onCheckedChange={() => toggleTaskCompletion(task.id)}
                       />
                     </TableCell>
@@ -162,16 +181,16 @@ export default function LaptopTask() {
                         <label
                           htmlFor={`task-${task.id}`}
                           className={`font-medium ${
-                            task.completed
+                            task.isCompleted
                               ? "line-through text-muted-foreground"
                               : ""
                           }`}
                         >
-                          {task.title}
+                          {task.title} 
                         </label>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <div className="flex items-center">
                         <Avatar className="h-6 w-6 mr-2">
                           <AvatarImage
@@ -184,7 +203,7 @@ export default function LaptopTask() {
                         </Avatar>
                         <span className="text-sm">{task.assignee.name}</span>
                       </div>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <Badge className={getPriorityColor(task.priority)}>
                         {task.priority}
@@ -225,14 +244,14 @@ export default function LaptopTask() {
                           size="icon"
                           onClick={() => toggleTaskCompletion(task.id)}
                           aria-label={
-                            task.completed
+                            task.isCompleted
                               ? "Mark as incomplete"
                               : "Mark as complete"
                           }
                         >
                           <CheckCircle
                             className={`h-4 w-4 ${
-                              task.completed
+                              task.isCompleted
                                 ? "text-green-500"
                                 : "text-gray-500"
                             }`}
