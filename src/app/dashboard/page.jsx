@@ -28,6 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getTasksDB } from "@/axios/taskService";
+import { getMember } from "@/axios/teamUser";
 
 const data = [
   { name: "Mon", tasks: 3 },
@@ -78,9 +79,12 @@ export default function Dashboard() {
   const [totalTasks, setTotalTasks] = useState("0");
   const [completedTask, setCompletedTask] = useState("0");
   const [pendingTask, setPendingTask] = useState("0");
+  const [teamCount, setTeamCount] = useState("0");
 
   const fecthTasks = async () => {
     try {
+      const employees = await getMember();
+      setTeamCount(employees.length);
       const userTasks = await getTasksDB();
       setTaskData(userTasks);
       setTotalTasks(userTasks.length);
@@ -135,7 +139,7 @@ export default function Dashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
+            <div className="text-2xl font-bold">{teamCount}</div>
             <p className="text-xs text-muted-foreground">
               Active collaborators
             </p>
