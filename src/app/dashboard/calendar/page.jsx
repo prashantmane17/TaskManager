@@ -32,9 +32,6 @@ import { cn } from "@/lib/utils";
 import { addTaskDb, getTasksDB } from "@/axios/taskService";
 
 const EnhancedTaskCalendar = () => {
- 
-
-
   const [currentDate, setCurrentDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({
@@ -47,20 +44,24 @@ const EnhancedTaskCalendar = () => {
     estimatedTime: "",
     tags: [],
   });
-  const[userTask, setUserTask] = useState([]);
+  const [userTask, setUserTask] = useState([]);
   const fetchTasks = async () => {
     try {
       const tasksdata = await getTasksDB(); // Fetch tasks
+      setTasks(
+        tasksdata.map((member, index) => ({
+          ...member,
+          id: member._id || index,
+        }))
+      );
     } catch (error) {
-      console.error('Error fetching tasks:', error);
+      console.error("Error fetching tasks:", error);
     }
   };
-  // useEffect(() => {
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
-  //   fetchTasks(); 
-  // }, []); 
-
-  
   const [selectedDate, setSelectedDate] = useState(null);
 
   const daysInMonth = new Date(
@@ -130,9 +131,11 @@ const EnhancedTaskCalendar = () => {
   };
 
   const getTasksForDate = (date) => {
-    return tasks.filter(
-      (task) => task.date.getTime() === date.getTime() // Use getTime() for more accurate date comparison
-    );
+    return tasks.filter((task) => {
+      const start = new Date(task.dateAdded);
+      const end = new Date(task.deadline);
+      return date >= start && date <= end;
+    });
   };
 
   const getPriorityColor = (priority) => {
@@ -220,6 +223,7 @@ const EnhancedTaskCalendar = () => {
             index + 1
           );
           const dayTasks = getTasksForDate(date);
+          console.log("dayTasks ", dayTasks);
           return (
             <Dialog key={index}>
               <DialogTrigger asChild>
@@ -432,7 +436,8 @@ const EnhancedTaskCalendar = () => {
                               <h4 className="font-medium">{task.title}</h4>
                               <p className="text-xs">{task.description}</p>
                               <p className="text-xs mt-1">
-                                Deadline: {task.deadline.toLocaleDateString()}
+                                Deadline:{" "}
+                                {new Date(task.deadline).toLocaleDateString()}
                               </p>
                             </div>
                             <Button
