@@ -136,7 +136,10 @@ export default function Nav({ children }) {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button
+                variant="ghost"
+                className="relative h-8 w-8 rounded-full bg-[#e6e6e6]"
+              >
                 <img
                   className="rounded-full"
                   src="/placeholder.svg?height=32&width=32"
