@@ -27,7 +27,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { format } from "date-fns";
-import { getTasksDB } from "@/axios/taskService";
+import { getTasksDB, updateTasksDB } from "@/axios/taskService";
 
 const initialTasks = [
   {
@@ -150,19 +150,15 @@ export default function LaptopTask() {
         if (tasks[key._id] === changedTask[key]) {
           console.log("hii");
           console.log(tasks[key]);
-          
-          updatedFields[key] = tasks[key];
+          const taskValue = tasks[key]
+          if(taskValue._id){
+            await updateTasksDB(taskValue._id, taskValue);
+          }
+          // updatedFields[key] = tasks[key];
         }
       }
-      console.log("k",updatedFields)
+
       
-  
-      if (Object.keys(updatedFields).length > 0) {
-        // const updatedTask = await updateTasksDB(id, updatedFields);
-        console.log('Updated Task:');
-      } else {
-        console.log('No changes detected');
-      }
   
     } catch (error) {
       console.error('Error updating task:', error);
