@@ -84,17 +84,19 @@ export default function LaptopTask() {
   const [tasks, setTasks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedTasks, setExpandedTasks] = useState([]);
+  const [showBtn, setShowBtn] = useState(false);
+  const [originalTask, setOriginalTask] = useState([]);
+  const [changedTask, setChangedTask] = useState([]);
 
   const fecthTask = async () => {
     try {
       const tasksList = await getTasksDB();
-      // setTeamMembers(user);
-      setTasks(
-        tasksList.map((member) => ({
-          ...member,
-          id: member._id || member.email,
-        }))
-      );
+      const tasksWithIds =  tasksList.map((member) => ({
+        ...member,
+        id: member._id || member.email,
+      }))
+      setTasks(tasksWithIds);
+      setOriginalTask(tasksWithIds);
       console.log(user);
     } catch {}
   };
@@ -125,16 +127,52 @@ export default function LaptopTask() {
     }
   };
   const toggleTaskCompletion = (taskId) => {
+    setChangedTask([...changedTask, taskId])
     setTasks((prev) =>
       prev.map((task) =>
         task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task
       )
     );
+    setShowBtn(true);
   };
 
   const deleteTask = (taskId) => {
     setTasks((prev) => prev.filter((task) => task.id !== taskId));
   };
+  
+  const updateTasks = async () => {
+    
+    try {
+      const updatedFields = {};
+  
+      for (const key in tasks) {
+
+        if (tasks[key._id] === changedTask[key]) {
+          console.log("hii");
+          console.log(tasks[key]);
+          
+          updatedFields[key] = tasks[key];
+        }
+      }
+      console.log("k",updatedFields)
+      
+  
+      if (Object.keys(updatedFields).length > 0) {
+        // const updatedTask = await updateTasksDB(id, updatedFields);
+        console.log('Updated Task:');
+      } else {
+        console.log('No changes detected');
+      }
+  
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
+  };
+  
+  const cancelBtn = ()=>{
+    setTasks(originalTask);
+    setShowBtn(false);
+  }
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -151,7 +189,7 @@ export default function LaptopTask() {
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[600px]">
+        <ScrollArea className="h-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -190,20 +228,7 @@ export default function LaptopTask() {
                         </label>
                       </div>
                     </TableCell>
-                    {/* <TableCell>
-                      <div className="flex items-center">
-                        <Avatar className="h-6 w-6 mr-2">
-                          <AvatarImage
-                            src={task.assignee.avatar}
-                            alt={task.assignee.name}
-                          />
-                          <AvatarFallback>
-                            {task.assignee.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm">{task.assignee.name}</span>
-                      </div>
-                    </TableCell> */}
+                    
                     <TableCell>
                       <Badge className={getPriorityColor(task.priority)}>
                         {task.priority}
@@ -297,6 +322,18 @@ export default function LaptopTask() {
             </TableBody>
           </Table>
         </ScrollArea>
+        {showBtn ? (
+  <div className="flex space-x-4 justify-end">
+    <button onClick={updateTasks} 
+    className="bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
+      Save
+    </button>
+    <button className="bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-300 transition duration-300" onClick={cancelBtn}>
+    Cancel
+    </button>
+  </div>
+) : null}
+
       </CardContent>
     </Card>
   );

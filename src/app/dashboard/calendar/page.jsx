@@ -246,7 +246,7 @@ const EnhancedTaskCalendar = () => {
                   )}
                 </div>
               </DialogTrigger>
-              <DialogContent className="max-w-md h-[100dvh] overflow-y-auto">
+              <DialogContent className="max-w-md h-[100dvh] overflow-y-auto ">
                 <DialogHeader>
                   <DialogTitle>
                     {date.toLocaleDateString("default", {

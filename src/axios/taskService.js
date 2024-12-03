@@ -19,3 +19,14 @@ export const getTasksDB = async () => {
     throw error;
   }
 };
+
+export const updateTasksDB = async (id,taskData) => {
+  try {
+    const response = await api.put(`/tasks/${id}`,taskData); 
+    return response.data; 
+  } catch (error) {
+    console.log('Error getting tasks:', error); 
+    throw error;
+  }
+};
+

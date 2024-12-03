@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState,useRef } from "react";
 import {
   Menu,
   X,
@@ -38,9 +38,14 @@ const data = [
 export default function Nav({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-
+  const modalRef = useRef(null);
   const toggleModal = () => setModalOpen((prev) => !prev);
 
+  const handleOverlayClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      setModalOpen(false);
+    }
+  };
   return (
     <div className="flex h-screen bg-gray-100">
       <aside
@@ -124,8 +129,10 @@ export default function Nav({ children }) {
             </Button>
 
             {isModalOpen && (
-              <div className="fixed inset-0 flex z-50 h-[100-dvh] pt-[50vh] md:pt-[0vh] overflow-y-auto items-center justify-center bg-gray-800 bg-opacity-50">
-                <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl mx-auto">
+              <div className="fixed inset-0 flex z-50 h-[100-dvh] pt-[50vh] md:pt-[35vh] overflow-y-auto items-center justify-center bg-gray-800 bg-opacity-50"
+              onClick={handleOverlayClick}>
+                <div
+                 ref={modalRef} className="bg-white p-6 rounded shadow-lg w-full max-w-2xl mx-auto">
                   <button onClick={toggleModal} className="text-red-500 mb-4">
                     Close
                   </button>
