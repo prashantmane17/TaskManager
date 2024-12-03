@@ -1,12 +1,12 @@
-import Tasks from "@/models/tasks"; 
+import Tasks from "@/models/tasks";
 import { NextResponse } from "next/server";
 import { db_Connect } from "@/helper/dbConnect";
 
-export async function PUT(request) {
+export async function PUT(request, { params }) {
   await db_Connect();
 
   try {
-    const { id } = request.query;  
+    const { id } = await params;
     const { title, description, priority, assignee, deadline, estimatedTime, tags, isCompleted } = await request.json();
 
     if (!title || !priority || !assignee) {
@@ -33,7 +33,7 @@ export async function PUT(request) {
     task.estimatedTime = estimatedTime || task.estimatedTime;
     task.tags = tags || task.tags;
     task.isCompleted = isCompleted !== undefined ? isCompleted : task.isCompleted;
-    task.dateUpdated = new Date();  
+    task.dateUpdated = new Date();
 
     await task.save();
 

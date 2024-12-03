@@ -91,14 +91,13 @@ export default function LaptopTask() {
   const fecthTask = async () => {
     try {
       const tasksList = await getTasksDB();
-      const tasksWithIds =  tasksList.map((member) => ({
+      const tasksWithIds = tasksList.map((member) => ({
         ...member,
         id: member._id || member.email,
       }))
       setTasks(tasksWithIds);
       setOriginalTask(tasksWithIds);
-      console.log(user);
-    } catch {}
+    } catch { }
   };
 
   useEffect(() => {
@@ -139,33 +138,26 @@ export default function LaptopTask() {
   const deleteTask = (taskId) => {
     setTasks((prev) => prev.filter((task) => task.id !== taskId));
   };
-  
+
   const updateTasks = async () => {
-    
+
     try {
-      const updatedFields = {};
-  
       for (const key in tasks) {
 
         if (tasks[key._id] === changedTask[key]) {
-          console.log("hii");
-          console.log(tasks[key]);
           const taskValue = tasks[key]
-          if(taskValue._id){
+          if (taskValue._id) {
             await updateTasksDB(taskValue._id, taskValue);
           }
-          // updatedFields[key] = tasks[key];
         }
       }
 
-      
-  
     } catch (error) {
       console.error('Error updating task:', error);
     }
   };
-  
-  const cancelBtn = ()=>{
+
+  const cancelBtn = () => {
     setTasks(originalTask);
     setShowBtn(false);
   }
@@ -214,17 +206,16 @@ export default function LaptopTask() {
                       <div>
                         <label
                           htmlFor={`task-${task.id}`}
-                          className={`font-medium ${
-                            task.isCompleted
-                              ? "line-through text-muted-foreground"
-                              : ""
-                          }`}
+                          className={`font-medium ${task.isCompleted
+                            ? "line-through text-muted-foreground"
+                            : ""
+                            }`}
                         >
-                          {task.title} 
+                          {task.title}
                         </label>
                       </div>
                     </TableCell>
-                    
+
                     <TableCell>
                       <Badge className={getPriorityColor(task.priority)}>
                         {task.priority}
@@ -271,11 +262,10 @@ export default function LaptopTask() {
                           }
                         >
                           <CheckCircle
-                            className={`h-4 w-4 ${
-                              task.isCompleted
-                                ? "text-green-500"
-                                : "text-gray-500"
-                            }`}
+                            className={`h-4 w-4 ${task.isCompleted
+                              ? "text-green-500"
+                              : "text-gray-500"
+                              }`}
                           />
                         </Button>
                         <Button
@@ -319,16 +309,16 @@ export default function LaptopTask() {
           </Table>
         </ScrollArea>
         {showBtn ? (
-  <div className="flex space-x-4 justify-end">
-    <button onClick={updateTasks} 
-    className="bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
-      Save
-    </button>
-    <button className="bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-300 transition duration-300" onClick={cancelBtn}>
-    Cancel
-    </button>
-  </div>
-) : null}
+          <div className="flex space-x-4 justify-end">
+            <button onClick={updateTasks}
+              className="bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
+              Save
+            </button>
+            <button className="bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-300 transition duration-300" onClick={cancelBtn}>
+              Cancel
+            </button>
+          </div>
+        ) : null}
 
       </CardContent>
     </Card>

@@ -1,0 +1,3 @@
+# MONGO_DB_URL = mongodb+srv://prashantmn17:prashantmn17@cluster0.7c3is.mongodb.net/
+MONGO_DB_URL = mongodb+srv://shivukhot2:shivukhot2@cluster0.ih8fp.mongodb.net/
+JWT_SECRET = 7632hbhsahsbhbahy38e68777@h8huh98*uhuhuhu@!@Y!@hbhshvsadsvdgsvdfsgdvsvhscgaskxsuxAYUJIUaigyugYU
