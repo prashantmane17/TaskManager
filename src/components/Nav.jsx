@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import AddTaskForm from "./addTask";
+import { useUser } from "@/context/UserContext";
 
 const data = [
   { name: "Mon", tasks: 3 },
@@ -40,6 +41,7 @@ export default function Nav({ children }) {
   const [isModalOpen, setModalOpen] = useState(false);
   const modalRef = useRef(null);
   const toggleModal = () => setModalOpen((prev) => !prev);
+  const {userData, logoutUser} = useUser();
 
   const handleOverlayClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -155,11 +157,14 @@ export default function Nav({ children }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>{userData.name}</DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <Link href="/dashboard/profile">
               <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              </Link>
+            
+              <DropdownMenuItem onClick={logoutUser}>Logout</DropdownMenuItem>
+              
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

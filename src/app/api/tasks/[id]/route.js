@@ -51,3 +51,39 @@ export async function PUT(request, { params }) {
     );
   }
 }
+
+
+
+export async function DELETE(request, { params }) {
+  await db_Connect();
+
+  const { id } = params;
+
+  try {
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: "Task ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const deletedTask = await Tasks.findByIdAndDelete(id);
+
+    if (!deletedTask) {
+      return NextResponse.json(
+        { success: false, message: "Task not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, message: "Task deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}

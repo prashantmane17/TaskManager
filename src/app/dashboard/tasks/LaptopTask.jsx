@@ -27,7 +27,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { format } from "date-fns";
-import { getTasksDB, updateTasksDB } from "@/axios/taskService";
+import { deleteTaskDb, getTasksDB, updateTasksDB } from "@/axios/taskService";
 
 const initialTasks = [
   {
@@ -135,22 +135,35 @@ export default function LaptopTask() {
     setShowBtn(true);
   };
 
-  const deleteTask = (taskId) => {
+  const deleteTask = async(taskId) => {
     setTasks((prev) => prev.filter((task) => task.id !== taskId));
+    try {
+      if(taskId)
+      {
+        await deleteTaskDb(taskId);
+      } 
+    } catch (error) {
+      
+    }
   };
 
   const updateTasks = async () => {
 
     try {
-      for (const key in tasks) {
+      console.log("changed tsak: ", changedTask)
+      console.log("tasks: ", tasks)
+      for (const task of tasks) {
 
-        if (tasks[key._id] === changedTask[key]) {
-          const taskValue = tasks[key]
+        if (changedTask.includes(task._id)) {
+
+          const taskValue = task
           if (taskValue._id) {
-            await updateTasksDB(taskValue._id, taskValue);
+            console.log("jii: ", taskValue)
+             await updateTasksDB(taskValue._id, taskValue);
           }
         }
       }
+      setShowBtn(false);
 
     } catch (error) {
       console.error('Error updating task:', error);

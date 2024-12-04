@@ -30,3 +30,14 @@ export const updateTasksDB = async (id,taskData) => {
   }
 };
 
+export const deleteTaskDb = async (id) => {
+  try {
+    const response = await api.delete(`/tasks/${id}`); 
+    return response.data; 
+  } catch (error) {
+    console.log('Error getting tasks:', error); 
+    throw error;
+  }
+};
+
+
