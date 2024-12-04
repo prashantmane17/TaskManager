@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React,{useState} from 'react';
 import { Mail, Phone, Users, UserCircle, CheckCircle2, Clock, BarChart2, Target, Camera } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
@@ -27,6 +27,16 @@ function App() {
       { id: "5", title: "Client Presentation Prep", completedAt: new Date(2024, 2, 19, 9, 0) }
     ]
   };
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Create an object URL for the selected file
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImage(imageUrl); // Update state with the selected image URL
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
@@ -36,15 +46,24 @@ function App() {
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             {/* Profile Photo */}
             <div className="relative">
-              <img
-                src={profileData.photoUrl}
-                alt={profileData.name}
-                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
-              />
-              <div className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md">
-                <Camera className="w-4 h-4 text-gray-600" />
-              </div>
-            </div>
+      <img
+        src={selectedImage || profileData.photoUrl} // Use the selected image if available
+        alt={profileData.name}
+        className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+      />
+      <div className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md">
+        <label htmlFor="fileInput" className="cursor-pointer">
+          <Camera className="w-4 h-4 text-gray-600" />
+        </label>
+        <input
+          type="file"
+          id="fileInput"
+          className="hidden"
+          accept="image/*"
+          onChange={handleImageChange} // Trigger the change handler
+        />
+      </div>
+    </div>
 
             {/* Profile Info */}
             <div className="flex-1">

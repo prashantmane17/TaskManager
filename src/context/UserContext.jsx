@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
-import cookies from 'js-cookie';
+import { useRouter } from "next/navigation";
 
 export const UserContext = createContext();
 
@@ -39,11 +39,22 @@ useEffect(() => {
   fetchUserData();
 }, []);
 
-const logoutUser =() =>{
-  cookies.set("authToken", "", { maxAge: -1 });
-  setUserData(intialData);
-  router.push("/");
-}
+const logoutUser = async () => {
+  try {
+    await fetch("/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    setUserData(intialData);
+    console.log("User logged out successfully");
+
+    const router = useRouter();
+    router.push("/");
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+};
 
   return (
     <UserContext.Provider value={{ userData, isLoading, logoutUser}}>
